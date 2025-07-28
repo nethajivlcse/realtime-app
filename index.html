@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Classroom Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: url('images/IMG_0564.JPG') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .header, .footer {
+            height: 25vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.9);
+            flex-direction: column;
+            padding: 20px;
+        }
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 800px;
+            margin: auto;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .nav a {
+            padding: 12px 18px;
+            background: #150c0c;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .nav a:hover {
+            background: #d5d7da;
+        }
+        .footer {
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            font-size: 25px;
+        }
+        /* Feedback Section */
+        .feedback-container {
+            margin-top: 50px;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        .feedback-container input, .feedback-container textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .feedback-container button {
+            padding: 10px 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .feedback-container button:hover {
+            background: #218838;
+        }
+        #feedback-list {
+            margin-top: 20px;
+            text-align: left;
+            width: 100%;
+            max-width: 600px;
+        }
+        .feedback-item {
+            background: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 5px solid #ffffff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <img src="images/T.png" alt="Smart Classroom Logo" class="logo">
+        <h1>Smart Classroom Management</h1>
+    </div>
+
+    <div class="container">
+        <p>Explore the future of learning with smart classrooms.</p>
+        <div class="nav">
+            <a href="features.html">Features</a>
+            <a href="technologies.html">Technologies</a>
+            <a href="benefits.html">Benefits</a>
+            <a href="chatbot.html">Chatbot</a>
+            <a href="schedule.html">Class Schedule</a>
+            <a onclick="scrollToFeedback()">Feedback</a> <!-- Updated Button -->
+        </div>
+
+        <!-- Feedback Section -->
+        <div class="feedback-container" id="feedback">
+            <h2>Give Your Feedback</h2>
+            <input type="text" id="name" placeholder="Your Name" required>
+            <input type="email" id="email" placeholder="Your Email" required>
+            <input type="number" id="rating" placeholder="Rating (1-5)" min="1" max="5" required>
+            <textarea id="message" placeholder="Your Feedback" rows="4" required></textarea>
+            <button onclick="submitFeedback()">Submit Feedback</button>
+        </div>
+
+        <!-- Display Feedback -->
+        <div id="feedback-list"></div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Smart Classroom</p>
+        <p>Contact: support@smartclassroom.com</p>
+    </div>
+
+    <script>
+        function scrollToFeedback() {
+            document.getElementById("feedback").scrollIntoView({ behavior: "smooth" });
+        }
+
+        function submitFeedback() {
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const rating = document.getElementById("rating").value;
+            const message = document.getElementById("message").value;
+
+            if (!name || !email || !rating || !message) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            const feedbackData = { name, email, rating, message };
+            let feedbackList = JSON.parse(localStorage.getItem("feedbacks")) || [];
+            feedbackList.push(feedbackData);
+            localStorage.setItem("feedbacks", JSON.stringify(feedbackList));
+
+            displayFeedback();
+            document.getElementById("name").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("rating").value = "";
+            document.getElementById("message").value = "";
+        }
+
+        function displayFeedback() {
+            const feedbackList = JSON.parse(localStorage.getItem("feedbacks")) || [];
+            const feedbackContainer = document.getElementById("feedback-list");
+            feedbackContainer.innerHTML = "<h2>Recent Feedback</h2>";
+            feedbackList.forEach(feedback => {
+                const feedbackItem = document.createElement("div");
+                feedbackItem.classList.add("feedback-item");
+                feedbackItem.innerHTML = `<strong>${feedback.name} (${feedback.rating}/5)</strong><p>${feedback.message}</p>`;
+                feedbackContainer.appendChild(feedbackItem);
+            });
+        }
+
+        // Load feedback on page load
+        window.onload = displayFeedback;
+    </script>
+
+</body>
+</html>
